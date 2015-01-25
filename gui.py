@@ -1,4 +1,4 @@
-This library comes under the MIT license.
+'''This library comes under the MIT license.
 
 Copyright (c) 2008 Canio Massimo "Keebus" Tristano
 
@@ -23,7 +23,7 @@ THE SOFTWARE.
 
 ***
 Read the documentation for help.
-***
+***'''
 
 import pygame
 from pygame import display
