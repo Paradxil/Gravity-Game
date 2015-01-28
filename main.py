@@ -13,6 +13,7 @@ from Tiles import *
 from Level import Level
 from Client import GameClient
 from Projectile import Projectile
+from levelEditor import LevelEditor
 import gui
 from gui import *
 FLAGS = RESIZABLE
@@ -37,16 +38,15 @@ def main():
     level.loadLevel("mainmenu.txt", player)
 
     #any variables used in other functions need to be global
-    global pause
-    global play
-    global multiplayer
     global host
     global port
     global client
+    global pause
+    global multiplayer
+    global STATE
 
-    pause = False
-    play = False
     multiplayer = False
+    pause = False
 
     host = ""
     port = ""
@@ -72,6 +72,13 @@ def main():
     mbutton = Button(position = (10,190), size = (200,50), parent = desktop, text = "MULTIPLAYER")
     mbutton.onClick = multiPlayerOnClick
 
+    b_editor = Button(position = (10,220), size = (200,50), parent = desktop, text = "LEVEL EDITOR")
+    b_editor.onClick = editorOnClick
+
+    #level editor variables
+
+    editor = LevelEditor()
+
     selected = 0
 
     while not done:
@@ -81,6 +88,8 @@ def main():
         events = gui.setEvents()
         #Check event queue for events and then act on them.
         for e in events:
+            if STATE==2:
+                editor.handleEvent(e)
             #Quit game event
             if e.type == QUIT:
                 done = True
@@ -90,7 +99,7 @@ def main():
                 DISPLAY[1] = e.h
                 screen = display.set_mode(DISPLAY, RESIZABLE)
                 screen.fill(Color("#FFFFFF"))
-            #Key Presses
+            #Key Pressed
             if e.type == KEYDOWN and e.key == K_UP:
                 up = True
             if e.type == KEYDOWN and e.key == K_DOWN:
@@ -139,29 +148,21 @@ def main():
             if e.type == KEYUP and e.key == K_d:
                 dkey = False
             if e.type == KEYUP and e.key == K_ESCAPE:
-                if play == False:
+                if STATE==0:
                     done = True
                 if pause:
-                    play = False
+                    STATE = 0
                     pause = False
                 if not pause:
                     pause = True
-            if e.type == KEYUP and e.key == K_SPACE:
-                if play == False:
-                    if selected == 0:
-                        play = True
-                        multiplayer = False
-                    if selected == 3:
-                        play = True
-                        multiplayer = True
-                        try:
-                            client = GameClient(hostbx.value, int(portbx.value))
-                        except:
-                            play = False
+
 
         #Then update the desktop you're using
         screen.fill(Color('#000000'))
-        if play:
+        if STATE==2:
+            STATE = editor.update()
+            editor.draw(screen)
+        elif STATE==1:
             # update everything
             # update player, pass in different key states
             if not pause:
@@ -200,7 +201,7 @@ def main():
                 screen.blit(subText, (10, 80))
                 subText = myfont.render("PRESS 'ESC' TO EXIT TO MENU", 1, (255,255,255))
                 screen.blit(subText, (10, 100))
-        else:
+        elif STATE==0:
             #Last thing to draw, desktop
             text1 = title.render("GRAVITY GAME", 1, (255,255,255))
             screen.blit(text1, (10, 10))
@@ -216,32 +217,41 @@ def main():
 def singlePlayerOnClick(button):
     #do this to access the global version of the variable
     global pause
-    global play
     global multiplayer
+    global STATE
+    STATE = 1
 
-    play = True
     pause = False
     multiplayer = False
 
 def multiPlayerOnClick(button):
     #do this to access the global version of the variable
     global pause
-    global play
     global multiplayer
     global client
     global host
     global port
+    global STATE
 
     #Don't do anything if trying to create client fails
     try:
         client = GameClient(host, int(port))
-
-        play = True
-        pause = False
         multiplayer = True
+        STATE=1
 
     except:
         pass
+
+def editorOnClick(button):
+    #do this to access the global version of the variable
+    global pause
+    global multiplayer
+    global STATE
+
+    STATE = 2
+    pause = False
+    multiplayer = False
+
 
 if(__name__ == "__main__"):
     main()
