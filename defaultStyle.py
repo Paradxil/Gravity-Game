@@ -5,12 +5,12 @@ path = os.path.dirname(__file__)
 
 def init(gui):
     #Surface Loading
-    buttonsurf = pygame.image.load(os.path.join(path,'art/button.png')).convert_alpha()
-    closesurf = pygame.image.load(os.path.join(path,'art/closebutton.png')).convert_alpha()
-    shadesurf = pygame.image.load(os.path.join(path,'art/shadebutton.png')).convert_alpha()
-    checksurf = pygame.image.load(os.path.join(path,'art/checkbox.png')).convert_alpha()
-    optionsurf = pygame.image.load(os.path.join(path,'art/optionbox.png')).convert_alpha()
-    combosurf = pygame.image.load(os.path.join(path,'art/combobox.png')).convert_alpha()
+    buttonsurf = pygame.image.load('art/button.png').convert_alpha()
+    closesurf = pygame.image.load('art/closebutton.png').convert_alpha()
+    shadesurf = pygame.image.load('art/shadebutton.png').convert_alpha()
+    checksurf = pygame.image.load('art/checkbox.png').convert_alpha()
+    optionsurf = pygame.image.load('art/optionbox.png').convert_alpha()
+    combosurf = pygame.image.load('art/combobox.png').convert_alpha()
     
     #Default gui font
     gui.defaultFont = pygame.font.SysFont("Arial", 12)
