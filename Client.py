@@ -53,7 +53,7 @@ class GameClient(ConnectionListener):
 
     def Network_getLevel(self, data):
         self.file = data['levelFile']
-        file_ = open(data['level'], 'w')
+        file_ = open(data['level'], 'w+')
         file_.write(self.file)
         file_.close()
 
