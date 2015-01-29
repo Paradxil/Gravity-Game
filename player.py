@@ -147,7 +147,8 @@ class Player(Entity):
                     if isinstance(p, LoadLevelBlock):
                         filen = level.levelBlockStrings[p.num]
                         #level.__init__()
-                        level.loadLevel(filen, self)
+                        while(level.loadLevel(filen, self)):
+                            pass
                         self.xvel = 0
                         self.yvel = 0
                         self.energy = 100

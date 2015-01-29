@@ -64,6 +64,7 @@ class Level():
             if y>self.levelSize.y:
                 self.levelSize.y = y
             x = 0
+        return True
 
 
     def loadLevel(self, fileName, player):

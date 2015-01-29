@@ -122,18 +122,8 @@ def main():
                 pause = not pause
 
             if e.type == KEYUP and e.key == K_UP:
-                if play == False:
-                    if selected < 0:
-                        selected = 0
-                    else:
-                        selected -= 1
                 up = False
             if e.type == KEYUP and e.key == K_DOWN:
-                if play == False:
-                    if selected > 3:
-                        selected = 0
-                    else:
-                        selected += 1
                 down = False
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
