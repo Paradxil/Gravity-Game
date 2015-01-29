@@ -43,8 +43,12 @@ class ServerChannel(Channel):
                 if file.endswith(".txt"):
                     data = deepcopy(tmpd)
                     print(os.path.join(root, file))
-                    data.update({"levelFile":open(os.path.join(root, file), 'r')})
-                    self._server.Send(data, self)
+                    filet = open(os.path.join(root, file), 'r')
+                    filett = filet.read()
+                    print(filett)
+                    data.update({"levelFile":filett})
+                    data.update({"level":os.path.join(root, file)})
+                    self.Send(data)
 
 class GameServer(Server):
     channelClass = ServerChannel
@@ -79,8 +83,6 @@ class GameServer(Server):
     def SendToAll(self, data):
         [p.Send(data) for p in self.players]
 
-    def Send(self, data, channel):
-        self.players[channel].Send(data)
 
     def Launch(self):
         while True:

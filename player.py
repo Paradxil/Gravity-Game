@@ -29,6 +29,7 @@ class Player(Entity):
 
     def initClient(self, host, port):
         self.client = GameClient(host, int(port))
+        self.client.getLevels()
 
     def update(self, up, down, left, right, akey, dkey, skey, wkey, level):
         if self.energy > 0:
