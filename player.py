@@ -101,6 +101,7 @@ class Player(Entity):
             self.gravityDir[2] = False
             self.gravityDir[3] = False
             self.gravity = Vector2(0,0.3)
+            self.gravityDirInt=1
         elif self.energy > 100:
             self.energy = 100
 
