@@ -6,6 +6,8 @@ from weakref import WeakKeyDictionary
 
 from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
+import os.path
+from copy import deepcopy
 
 class ServerChannel(Channel):
     """
@@ -34,6 +36,15 @@ class ServerChannel(Channel):
     def Network_move(self, data):
         self.PassOn(data)
 
+    def Network_getLevel(self, data):
+        tmpd = deepcopy(data)
+        for root, dirs, files in os.walk("Levels//"):
+            for file in files:
+                if file.endswith(".txt"):
+                    data = deepcopy(tmpd)
+                    print(os.path.join(root, file))
+                    data.update({"levelFile":open(os.path.join(root, file), 'r')})
+                    self._server.Send(data, self)
 
 class GameServer(Server):
     channelClass = ServerChannel
@@ -67,6 +78,9 @@ class GameServer(Server):
 
     def SendToAll(self, data):
         [p.Send(data) for p in self.players]
+
+    def Send(self, data, channel):
+        self.players[channel].Send(data)
 
     def Launch(self):
         while True:

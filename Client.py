@@ -15,6 +15,7 @@ class GameClient(ConnectionListener):
         self.players = {}
         self.id=""
         self.disconnected = False
+        self.file = None
 
     def Loop(self, screen, camera, level):
         self.Pump()
@@ -34,6 +35,9 @@ class GameClient(ConnectionListener):
     def Move(self, pos, level, gravity):
         connection.Send({"action": "move", "pos": pos, "gravity": gravity, "level": level})
 
+    def getLevels(self):
+        connection.Send({"action": "getLevel"})
+
     ###############################
     ### Network event callbacks ###
     ###############################
@@ -46,6 +50,12 @@ class GameClient(ConnectionListener):
         self.players[data['id']]['pos']=(data['pos'][0],data['pos'][1])
         self.players[data['id']]['gravity']=data['gravity']
         self.players[data['id']]['level']=data['level']
+
+    def Network_getLevel(self, data):
+        self.file = data['levelFile']
+        file_ = open(data['level'], 'w')
+        file_.write(self.file)
+        file_.close()
 
     def Network_players(self, data):
         self.playersLabel = str(len(data['players'])) + " players"

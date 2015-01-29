@@ -82,6 +82,7 @@ class Level():
         self.interactablePlatforms = []
         self.projectiles = []
         read = open("Levels//"+fileName, 'r')
+
         start = False
         for line in read:
             if line[0] == '/' and line[1] == '/':

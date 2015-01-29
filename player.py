@@ -6,7 +6,7 @@ from Entity import Entity
 from GlobalVars import *
 from Tiles import *
 from Level import Level
-
+from Client import GameClient
 
 class Player(Entity):
     def __init__(self, x, y):
@@ -25,6 +25,10 @@ class Player(Entity):
         self.acceleration = 3
         self.energy = 100
         self.gravityDirInt=1
+        self.client = None
+
+    def initClient(self, host, port):
+        self.client = GameClient(host, int(port))
 
     def update(self, up, down, left, right, akey, dkey, skey, wkey, level):
         if self.energy > 0:
@@ -127,6 +131,9 @@ class Player(Entity):
         # do y-axis collisions
         self.collide(0, self.yvel, level)
 
+        if self.client != None:
+            self.client.Move((self.rect.x,self.rect.y),level.thisLevelFile,self.gravityDirInt)
+
     def death(self, level):
         string3 = level.thisLevelFile
         #level.__init__()
@@ -186,6 +193,7 @@ class Player(Entity):
 
 
     def draw(self, surface, camera):
+
         pygame.draw.rect(surface, Color("#DD5566"), [DISPLAY[0] - 110, 10, 100, 20])
         if self.energy>0:
             pygame.draw.rect(surface, Color("#55DD66"), [DISPLAY[0] - 110, 10, self.energy, 20])

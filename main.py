@@ -30,20 +30,23 @@ def main():
     done = False
     up = down = left = right = False
     akey = wkey = skey = dkey = False
-    player = Player(TILESIZE, TILESIZE)
     camera = Vector2(0,0)
 
     # build the level
     level = Level()
-    level.loadLevel("mainmenu.txt", player)
+
 
     #any variables used in other functions need to be global
     global host
     global port
-    global client
+    global player
     global pause
     global multiplayer
     global STATE
+
+    player = Player(TILESIZE, TILESIZE)
+
+    level.loadLevel("mainmenu.txt", player)
 
     multiplayer = False
     pause = False
@@ -157,8 +160,6 @@ def main():
             # update player, pass in different key states
             if not pause:
                 player.update(up, down, left, right, akey, dkey, skey, wkey, level)
-                if multiplayer:
-                    client.Move((player.rect.x,player.rect.y),level.thisLevelFile,player.gravityDirInt)
 
                 #update camera
                 #move with player
@@ -173,9 +174,9 @@ def main():
 
             #draw player
             player.draw(screen, camera)
-            if multiplayer:
-                client.Loop(screen, camera, level.thisLevelFile)
-                if client.disconnected:
+            if multiplayer and player.client!=None:
+                player.client.Loop(screen, camera, level.thisLevelFile)
+                if player.client.disconnected:
                     text1 = menu.render("DISCONNECTED FROM SERVER.", 1, (255,255,255))
                     subText = myfont.render("YOU CAN CONTINUE PLAYING IN SINGLE PLAYER OR EXIT TO THE MENU.", 1, (255,255,255))
                     multiplayer = False
@@ -225,10 +226,9 @@ def multiPlayerOnClick(button):
 
     #Don't do anything if trying to create client fails
     try:
-        client = GameClient(host, int(port))
+        player.initClient(host, int(port))
         multiplayer = True
         STATE=1
-
     except:
         pass
 
