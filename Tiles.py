@@ -5,6 +5,7 @@ from pygame import *
 from Entity import Entity
 from GlobalVars import *
 from Projectile import Projectile
+from copy import deepcopy
 
 class Platform(Entity):
     def __init__(self, x, y):
@@ -20,6 +21,11 @@ class Platform(Entity):
 
     def draw(self, surface, camera):
         surface.blit(self.image, Rect(self.rect.x - camera.x, self.rect.y - camera.y, TILESIZE, TILESIZE))
+
+    def copy(self):
+        tmp = deepcopy(self)
+        tmp.image = self.image
+        return tmp
 
 class ShootBlock(Platform):
     def __init__(self, x, y):
@@ -91,6 +97,11 @@ class SpikeBlock(Platform):
     def draw(self, surface, camera):
         Platform.draw(self, surface, camera)
         surface.blit(self.tim, (self.rect.x-camera.x, self.rect.y-camera.y))
+
+    def copy(self):
+        tmp=Platform.copy(self)
+        tmp.tim = self.tim
+        return tmp
 
 class TextBlock(Platform):
     def __init__(self,x,y,char):

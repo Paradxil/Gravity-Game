@@ -98,9 +98,18 @@ def createButtonStyle(font, fontcolor,  surface, *spaces):
         style['do-disabled'] = False
     return style
 
-def createImageButtonStyle(image, buttonWidth):
+def createImageButtonStyle(image, buttonWidth, autoShade = True):
     if image.get_width() < buttonWidth:
         raise GuiException("The button width must be less or equal than image width.")
+
+    if autoShade:
+        surface = pygame.Surface((60,20))
+        surface.fill((200,200,200))
+        surface.fill((100,100,100),(40,0,20,20))
+        surface.blit(image, (0,0), area=None, special_flags =  0)
+        surface.blit(image, (20,0), area=None, special_flags =  pygame.BLEND_RGB_MULT)
+        surface.blit(image, (40,0), area=None, special_flags =  pygame.BLEND_RGB_MULT)
+        image = surface
     
     style = {}
         
@@ -1106,7 +1115,7 @@ class CheckBox(Widget):
                     draw.rect(surf, self.style['border-color'], self.rect, self.style['border-width'])
 
 class OptionBox(Widget):
-        def __init__(self,  position = (0,0), size = (120,20), parent = None, style = None, enabled = True, text = "CheckBox", value = False):
+        def __init__(self,  position = (0,0), size = (120,20), group = "", parent = None, style = None, enabled = True, text = "CheckBox", value = False):
             if not style:
                 if defaultOptionBoxStyle:
                     style = defaultOptionBoxStyle
@@ -1118,6 +1127,9 @@ class OptionBox(Widget):
             self._value = False
             self.value = value 
             self.surf = None
+
+            #Group functionality was not included in original code.
+            self.group = group
                             
             self.dynamicAttributes.extend(["text","value"])
             
@@ -1189,10 +1201,11 @@ class OptionBox(Widget):
             if self._parent:
                 for widget in self._parent.widgets:
                     if type(widget) == type(self) and widget != self:
-                        widget._value = not self._value
-                        if not self._value:
-                            self._parent.selectedOptionBox = widget                    
-                            break
+                        if widget.group == self.group:
+                            widget._value = not self._value
+                            if not self._value:
+                                self._parent.selectedOptionBox = widget
+                                break
             
         value = property(lambda self: self._value, _set_value)       
         
