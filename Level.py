@@ -101,21 +101,41 @@ class Level():
         self.buildLevel(player)
         self.createLevelImage()
 
+    def addTile(self, tile):
+        x = tile.rect.x
+        y = tile.rect.y
+        change = [0,0]
+        if x < 0:
+            xdif = -x
+            change[0] = xdif
+            x = 0
+            for p in self.platforms:
+                p.rect.x += xdif
+            self.levelSize.x += xdif
+        elif x+TILESIZE >= self.levelSize.x:
+            self.levelSize.x = x+TILESIZE
+
+        if y < 0:
+            ydif = -y
+            y = 0
+            change[1] = ydif
+            for p in self.platforms:
+                p.rect.y += ydif
+            self.levelSize.y += ydif
+        elif y+TILESIZE >= self.levelSize.y:
+            self.levelSize.y = y+TILESIZE
+
+        tile.rect.x = x
+        tile.rect.y = y
+
+        self.platforms.append(tile)
+        return change
+
     def createLevelImage(self):
         self.levelImage = Surface((self.levelSize.x, self.levelSize.y))
 
-        img = pygame.image.load('Images//background.png')
-
-        for y in range(0,self.levelSize.y,60):
-            for x in range(0,self.levelSize.x,60):
-                #self.levelImage.blit(img,(x,y))
-                pass
-
-        img2 = Surface((TILESIZE, TILESIZE))
-        img2.convert()
-        img2.fill(Color("#000000"))
-
         platformPos = []
+        self.interactablePlatforms = []
         for p in self.platforms:
             platformPos.append(Vector2(p.rect.x, p.rect.y))
             if p.interactable == False:

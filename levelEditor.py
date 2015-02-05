@@ -114,7 +114,9 @@ class LevelEditor():
             tmp = self.selectedTile.copy()
             tmp.rect.x = x
             tmp.rect.y = y
-            self.level.platforms.append(tmp)
+            change = self.level.addTile(tmp)
+            self.camera[0]+=change[0]
+            self.camera[1]+=change[1]
             self.level.createLevelImage()
 
     def getTileAtPos(self, pos):
