@@ -125,6 +125,7 @@ class Level():
                 #self.platforms.remove(p)
 
 
+
     def draw(self, surface, camera):
         surface.blit(self.levelImage, (-camera.x,-camera.y))
         for p in self.interactablePlatforms:

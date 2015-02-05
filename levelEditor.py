@@ -23,6 +23,9 @@ class LevelEditor():
     def __init__(self):
         self.gui = Desktop()
         self.exitEditor = Button(position = (10,10), size = (50,50), parent = self.gui, text = "EXIT")
+        self.exitEditor = Button(position = (60,10), size = (50,50), parent = self.gui, text = "NEW")
+        self.exitEditor = Button(position = (110,10), size = (50,50), parent = self.gui, text = "SAVE")
+        self.exitEditor = Button(position = (160,10), size = (50,50), parent = self.gui, text = "OPEN")
 
         self.toolsWindow = Window(position = (10,50), size = (170,60), parent = self.gui, text = "TOOLS")
         self.tilesWindow = Window(position = (10,120), size = (100,400), parent = self.gui, text = "TILES")
@@ -52,7 +55,7 @@ class LevelEditor():
         self.player = Player(TILESIZE, TILESIZE)
 
         self.level = Level()
-        self.level.loadLevel("mainmenu.txt", self.player)
+        self.level.loadLevel("empty.txt", self.player)
 
          #move view
         self.mouseClickPos = [0,0]
@@ -66,24 +69,26 @@ class LevelEditor():
         self.toolFunctions = [self.pan,self.erase,self.place]
 
     def handleEvent(self, e):
-        if not self.toolsWindow.hasFocus and not self.tilesWindow.hasFocus:
+        if self.gui.findTopMost(mouse.get_pos())==self.gui:
+            if mouse.get_pressed()[1]:
+                self.tool=0
+            elif mouse.get_pressed()[2]:
+                self.tool=1
+            if mouse.get_pressed()[0]:
+                self.tool=2
             self.toolFunctions[self.tool](e)
 
     def pan(self, e):
         if e.type == MOUSEBUTTONDOWN:
             self.mouseClickPos = mouse.get_pos()
-            mb = mouse.get_pressed()
-            if mb[0]:
-                self.lmbPressed = True
+            self.lmbPressed = True
 
         if e.type == MOUSEBUTTONUP:
-            mb = mouse.get_pressed()
-            if not mb[0]:
-                self.lmbPressed = False
-                self.camera[0] += self.change[0]
-                self.camera[1] += self.change[1]
-                self.change[0] = 0
-                self.change[1] = 0
+            self.lmbPressed = False
+            self.camera[0] += self.change[0]
+            self.camera[1] += self.change[1]
+            self.change[0] = 0
+            self.change[1] = 0
 
         if e.type == MOUSEMOTION:
             if self.lmbPressed:
@@ -92,7 +97,7 @@ class LevelEditor():
 
     def erase(self, e):
         mb = mouse.get_pressed()
-        if mb[0]:
+        if mb[0] or mb[1] or mb[2]:
             i = self.getTileAtPos((mouse.get_pos()[0]+self.camera[0],mouse.get_pos()[1]+self.camera[1]))
             if i!=-1:
                 self.level.platforms.remove(self.level.platforms[i])
@@ -120,7 +125,6 @@ class LevelEditor():
 
     def update(self):
         self.gui.update()
-
         for tile in self.tileButtons:
             if tile.mouseclick:
                 self.selectedTile = tile.tile

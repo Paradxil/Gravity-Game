@@ -42,10 +42,8 @@ class ServerChannel(Channel):
             for file in files:
                 if file.endswith(".txt"):
                     data = deepcopy(tmpd)
-                    print(os.path.join(root, file))
                     filet = open(os.path.join(root, file), 'r')
                     filett = filet.read()
-                    print(filett)
                     data.update({"levelFile":filett})
                     data.update({"level":os.path.join(root, file)})
                     self.Send(data)
