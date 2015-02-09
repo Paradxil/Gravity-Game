@@ -92,6 +92,7 @@ class SpikeBlock(Platform):
         self.tim = Surface((TILESIZE, TILESIZE))
         self.tim = pygame.image.load('Images//spike.png')
         self.tim = pygame.transform.rotate(self.tim, r)
+        self.r = r
 
 
     def draw(self, surface, camera):
@@ -114,3 +115,9 @@ class TextBlock(Platform):
         Platform.draw(self, surface, camera)
         label = self.font.render(self.text, 1, (0,0,0))
         surface.blit(label, (self.rect.x-camera.x, self.rect.y-camera.y))
+
+class StartBlock(Platform):
+    def __init__(self, x, y):
+            Platform.__init__(self, x, y)
+            self.solid = False
+            self.image = pygame.image.load('Images//start.png')

@@ -51,6 +51,10 @@ class Level():
                 elif col == ".":
                     e = FloorBlock(x, y)
                     self.platforms.append(e)
+                elif col == "*":
+                    player.rect = Rect(int(x), int(y), player.rect.width, player.rect.height)
+                    e = StartBlock(x, y)
+                    self.platforms.append(e)
                 elif is_number(col):
                     e = LoadLevelBlock(x, y, int(col))
                     self.platforms.append(e)
@@ -84,6 +88,7 @@ class Level():
         read = open("Levels//"+fileName, 'r')
 
         start = False
+
         for line in read:
             if line[0] == '/' and line[1] == '/':
                 pass
@@ -100,6 +105,62 @@ class Level():
                 self.levelBlockStrings.append(line.split(',')[1].rstrip())
         self.buildLevel(player)
         self.createLevelImage()
+
+    def getTileAtPos(self, pos):
+        for i in range(0,len(self.platforms)):
+            if self.platforms[i].rect.collidepoint(pos[0],pos[1]):
+                return self.platforms[i]
+        return -1
+
+    def saveLevel(self, fileName, player):
+        #player.gravity = Vector2(0,0.3)
+        #player.gravityDir[1] = True
+        #player.gravityDir[0] = False
+        #player.gravityDir[2] = False
+        #player.gravityDir[3] = False
+        file = open("Levels//"+fileName+".map", 'w+')
+
+        text = []
+        header = []
+        for y in range(0,self.levelSize.y/TILESIZE):
+            line = ""
+            for x in range(0,self.levelSize.x/TILESIZE):
+                tile = self.getTileAtPos((x*TILESIZE, y*TILESIZE))
+                if tile==-1:
+                    line+=" "
+                if isinstance(tile, WallBlock):
+                    line += "#"
+                elif isinstance(tile, ExitBlock):
+                    line += "x"
+                elif isinstance(tile, ShootBlock):
+                    line += "+"
+                elif isinstance(tile, SpikeBlock):
+                    if tile.r == 0:
+                        line += "^"
+                    elif tile.r == -90:
+                        line += ">"
+                    elif tile.r == 90:
+                        line += "<"
+                    elif tile.r == 180:
+                        line += "v"
+                elif isinstance(tile, RechargeBlock):
+                    line += "@"
+                elif isinstance(tile, FloorBlock):
+                    line += "."
+                elif isinstance(tile, StartBlock):
+                    line += "*"
+                elif isinstance(tile, LoadLevelBlock):
+                    line += str(tile.num)
+                elif isinstance(tile, TextBlock):
+                    line += tile.text
+            text.append(line)
+        for t in self.levelBlockStrings:
+            file.write("levelblock,"+t+"\n")
+        file.write("start \n")
+        for t in text:
+            file.write(t+"\n")
+
+        file.close()
 
     def addTile(self, tile):
         x = tile.rect.x

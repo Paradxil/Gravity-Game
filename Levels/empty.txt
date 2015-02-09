@@ -7,10 +7,6 @@ player,38,37
 
 //levelblock,filename to set load level blocks in order
 //you can have up to 10 load level blocks, 0-9 in order of definition
-levelblock,tutorial.txt
-levelblock,levelone.txt
-levelblock,leveltwo.txt
-levelblock,levelthree.txt
 //tells program to start reading in the map file
 //# = Wall
 //. = Background

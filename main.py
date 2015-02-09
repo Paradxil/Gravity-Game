@@ -153,7 +153,7 @@ def main():
         #Then update the desktop you're using
         screen.fill(Color('#000000'))
         if STATE==2:
-            STATE = editor.update()
+            STATE = editor.update(up, down, left, right, akey, dkey, skey, wkey)
             editor.draw(screen)
         elif STATE==1:
             # update everything
